@@ -1,0 +1,97 @@
+[build-system]
+build-backend = "poetry_dynamic_versioning.backend"
+requires = ["poetry-core", "poetry-dynamic-versioning"]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+aws-cdk-lib = "*"
+aws-cdk-aws-amplify-alpha = "*"
+constructs = "*"
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "*"
+tox = "*"
+
+[tool.poetry.group.test.dependencies]
+pytest = "*"
+
+[tool.poetry-dynamic-versioning]
+enable = false
+vcs = "git"
+style = "semver"
+
+[tool.bandit.assert_used]
+exclude = ["*_test.py", "test_*.py"]
+
+[tool.black]
+line-length = 120
+exclude = '''
+(
+  \.git
+  | \.tox
+  | \.venv
+  | venv
+  | build
+  | dist
+)
+'''
+
+[tool.isort]
+include_trailing_comma = true
+force_grid_wrap = 2
+use_parentheses = true
+line_length = 120
+profile = "black"
+multi_line_output = 3
+skip = "target"
+skip_glob = "**/gen/*,.venv*/*,venv*/*,.tox/*"
+known_first_party = "jobs"
+
+[tool.mypy]
+disallow_incomplete_defs = true
+disallow_untyped_defs = true
+ignore_missing_imports = true
+
+[tool.poetry]
+authors = ["acme-im"]
+description = "NaturaTest Infra"
+keywords = ["infra"]
+name = "natura-infra"
+readme = "README.md"
+version = "0.0.0"
+packages = [{ include = "cdk_stack" }]
+
+[tool.pytest.ini_options]
+addopts = "-s -v"
+testpaths = "tests"
+markers = [
+    "integration: marks integration tests",
+    "unit: marks unittests"
+]
+
+[tool.tox]
+legacy_tox_ini = """
+[tox]
+isolated_build = True
+skipsdist = True
+skip_missing_interpreters = True
+
+[testenv:lint]
+skip_install = true
+recreate = false
+ignore_errors = true
+deps =
+    pre-commit
+commands =
+    pre-commit run --all-files
+
+[testenv:test]
+recreate = false
+ignore_errors = true
+deps =
+    poetry
+commands_pre =
+    poetry install --with test
+commands =
+    poetry run pytest -m unit tests/
+"""

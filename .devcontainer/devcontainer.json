@@ -1,0 +1,20 @@
+{
+	"name": "natura-infra",
+	"build": {
+		"dockerfile": "Dockerfile"
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-python.python",
+				"ms-python.black-formatter"
+			]
+		}
+	},
+	"postCreateCommand": ".devcontainer/post-create.sh",
+	"mounts": [
+		"source=${env:HOME}${env:USERPROFILE}/.aws,target=/home/vscode/.aws,type=bind",
+		"source=${env:HOME}${env:USERPROFILE}/.ssh,target=/home/vscode/.ssh,type=bind",
+		"source=/ara/devel/acme/natura/mobile-app,target=/workspaces/mobile-app,type=bind"
+	]
+}
